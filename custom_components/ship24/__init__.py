@@ -44,6 +44,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     async def async_track_package(call):
         """Service to add a new package tracker."""
         api_key = entry.data.get("api_key")
+        country = entry.data.get("country")
         tracking_number = await render_template(hass, call.data.get("tracking_number"))
         session = async_get_clientsession(hass)
 
@@ -51,7 +52,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
         async with session.post(
                 "https://api.ship24.com/public/v1/trackers",
-                json={"trackingNumber": tracking_number},
+                json={
+                    "trackingNumber": tracking_number,
+                    "destinationCountryCode": country,
+                },
                 headers={
                     "Authorization": f"Bearer {api_key}",
                     "Content-Type": "application/json; charset=utf-8",

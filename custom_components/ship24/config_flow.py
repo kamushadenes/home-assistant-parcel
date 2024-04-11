@@ -19,6 +19,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
             step_id="init",
             data_schema=vol.Schema({
                 vol.Required("api_key", default=self.config_entry.options.get("api_key")): str,
+                vol.Required("country", default=self.config_entry.options.get("country")): str,
             }),
         )
 
@@ -39,5 +40,8 @@ class Ship24ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         return self.async_show_form(
             step_id="user",
-            data_schema=vol.Schema({vol.Required("api_key"): str})
+            data_schema=vol.Schema({
+                vol.Required("api_key"): str,
+                vol.Required("country"): str,
+            }),
         )
