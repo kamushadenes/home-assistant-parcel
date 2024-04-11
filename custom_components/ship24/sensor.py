@@ -63,10 +63,10 @@ class Ship24UpdateCoordinator(DataUpdateCoordinator):
                     _LOGGER.error(f"Error fetching tracking data for {tracker_id}")
                     continue
                 tracking_result = await response.json()
-                tracking_data[tracker_id] = tracking_result
+                tracking_data[tracker_id] = tracking_result.get('data', {}).get('trackings', [{}])[0]
 
         _LOGGER.warn(json.dumps(tracking_data))
-        return tracking_data
+        return tracking_data['data']['trackings']
 
 
 class Ship24Sensor(CoordinatorEntity, Entity):
