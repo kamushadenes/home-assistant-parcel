@@ -1,6 +1,7 @@
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from .sensor import Ship24UpdateCoordinator
 
 from .const import DOMAIN
 
@@ -13,8 +14,16 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Ship24 as a config entry."""
-    # Use the entry data (e.g., API key) to set up connections or services here.
-    # For example, you might initialize your sensor platform:
+    # Initialize your integration's core here, for example, setting up an update coordinator.
+    coordinator = Ship24UpdateCoordinator(hass, entry.data['api_key'])
+    await coordinator.async_refresh()
+
+    # Store a reference to the coordinator in hass.data
+    if DOMAIN not in hass.data:
+        hass.data[DOMAIN] = {}
+    hass.data[DOMAIN][entry.entry_id] = coordinator
+
+    # Forward the entry setup to the sensor platform.
     hass.async_create_task(
         hass.config_entries.async_forward_entry_setup(entry, "sensor")
     )
