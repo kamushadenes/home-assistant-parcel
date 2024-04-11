@@ -66,7 +66,7 @@ class Ship24UpdateCoordinator(DataUpdateCoordinator):
                 tracking_data[tracker_id] = tracking_result.get('data', {}).get('trackings', [{}])[0]
 
         _LOGGER.warn(json.dumps(tracking_data))
-        return tracking_data['data']['trackings']
+        return tracking_data
 
 
 class Ship24Sensor(CoordinatorEntity, Entity):
