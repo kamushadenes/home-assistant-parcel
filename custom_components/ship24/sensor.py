@@ -137,4 +137,22 @@ class Ship24Sensor(CoordinatorEntity, Entity):
              'Status Category': obj.get('shipment', {}).get('statusCategory', ''),
              'Status Milestone': obj.get('shipment', {}).get('statusMilestone', '')}
 
+        last_status = "Unknown"
+        last_event = None
+
+        for event in obj['events']:
+            t = datetime.strptime(event['occurrenceDatetime'], '%Y-%m-%dT%H:%M:%S')
+            if last_event is None or t > last_event:
+                last_event = t
+                if event['statusCode'] in statusCodes:
+                    last_status = statusCodes[event['statusCode']]
+                elif event['statusMilestone'] in statusMilestones:
+                    last_status = statusMilestones[event['statusMilestone']]
+                else:
+                    last_status = event['status'].title()
+
+        if last_status != "Unknown":
+            d['Last Status'] = last_status
+            d['Last Event'] = last_event.isoformat()
+
         return d
