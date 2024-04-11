@@ -47,9 +47,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                     "Content-Type": "application/json; charset=utf-8",
                 },
         ) as response:
-            _LOGGER.warn(await response.content.read())
-            response.raise_for_status()
-            # Handle response
+            if response.status_code == 400:
+                _LOGGER.error(await response.content.read())
+                raise ValueError(await response.json()['message'])
 
     # Register your service with Home Assistant.
     hass.services.async_register(DOMAIN, "track_package", async_track_package)
