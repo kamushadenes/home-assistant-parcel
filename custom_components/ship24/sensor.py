@@ -104,18 +104,19 @@ class Ship24Sensor(CoordinatorEntity, Entity):
         """Return the state of the sensor."""
         tracking_data = self.coordinator.data.get(self.tracker_id, {})
         # You might want to adjust what property you use as the state
-        event = "Unknown"
+        status = "Unknown"
         last_event = None
 
         # Get last event based on occurrenceDatetime
         for event in tracking_data.get('events', []):
+            _LOGGER.warn(json.dumps(event))
             # parse
             t = datetime.strptime(event['occurrenceDatetime'], '%Y-%m-%dT%H:%M:%S')
             if last_event is None or t > last_event:
                 last_event = t
-                event = event['statusCode']
+                status = event['statusCode']
 
-        return statusCodes.get(event, event)
+        return statusCodes.get(status, status)
 
     @property
     def extra_state_attributes(self):
