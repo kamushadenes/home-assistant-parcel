@@ -4,6 +4,7 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from .sensor import Ship24UpdateCoordinator
 import logging
 from homeassistant.helpers.template import Template
+from homeassistant.components.persistent_notification import create as create_notification
 
 
 from .const import DOMAIN
@@ -63,6 +64,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 raise ValueError(obj['errors'][0]['message'])
 
         await coordinator.async_request_refresh()
+
+        create_notification(hass,
+                            f"Packaged {tracking_number} added successfully!",
+                            "Package Added")
 
     # Register your service with Home Assistant.
     hass.services.async_register(DOMAIN, "track_package", async_track_package)

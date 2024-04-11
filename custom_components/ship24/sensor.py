@@ -1,12 +1,12 @@
 import json
 import aiohttp
 import logging
-from datetime import timedelta
+from datetime import timedelta, datetime
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed, \
     CoordinatorEntity
 
-from .const import DOMAIN
+from .const import DOMAIN, statusCodes
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -35,7 +35,7 @@ class Ship24UpdateCoordinator(DataUpdateCoordinator):
             hass,
             _LOGGER,
             name="ship24_tracker",
-            update_interval=timedelta(minutes=15),  # Adjust the interval as needed
+            update_interval=timedelta(minutes=15),
         )
 
     async def _async_update_data(self):
@@ -56,7 +56,7 @@ class Ship24UpdateCoordinator(DataUpdateCoordinator):
         _LOGGER.warn(json.dumps(trackers))
         for tracker in trackers.get('data', {}).get('trackers', []):
             tracker_id = tracker['trackerId']
-            tracking_url = f"https://api.ship24.com/public/v1/trackers/{tracker_id}"
+            tracking_url = f"https://api.ship24.com/public/v1/trackers/{tracker_id}/results"
 
             async with self.session.get(tracking_url, headers=headers) as response:
                 if response.status != 200:
@@ -65,6 +65,7 @@ class Ship24UpdateCoordinator(DataUpdateCoordinator):
                 tracking_result = await response.json()
                 tracking_data[tracker_id] = tracking_result
 
+        _LOGGER.warn(json.dumps(tracking_data))
         return tracking_data
 
 
@@ -75,6 +76,7 @@ class Ship24Sensor(CoordinatorEntity, Entity):
         super().__init__(coordinator)
         self.tracker_id = tracker_id
         self.attrs = {}
+        self.coordinator = coordinator
 
     @property
     def name(self):
@@ -86,7 +88,18 @@ class Ship24Sensor(CoordinatorEntity, Entity):
         """Return the state of the sensor."""
         tracking_data = self.coordinator.data.get(self.tracker_id, {})
         # You might want to adjust what property you use as the state
-        return tracking_data.get('status', 'unknown')
+        event = "Unknown"
+        last_event = None
+
+        # Get last event based on occurrenceDatetime
+        for event in tracking_data.get('events', []):
+            # parse
+            t = datetime.strptime(event['occurrenceDatetime'], '%Y-%m-%dT%H:%M:%S')
+            if last_event is None or t > last_event:
+                last_event = t
+                event = event['statusCode']
+
+        return statusCodes.get(event, event)
 
     @property
     def extra_state_attributes(self):
