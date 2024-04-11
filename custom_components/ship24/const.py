@@ -36,3 +36,14 @@ statusCodes = {
     # Exception
     "exception_return": "Shipment undeliverable",
 }
+
+statusMilestones = {
+    "pending": "Pending",
+    "info_received": "Information Received",
+    "in_transit": "In Transit",
+    "out_for_delivery": "Out for Delivery",
+    "failed_attempt": "Failed Attempt",
+    "available_for_pickup": "To Pick Up",
+    "delivered": "Delivered",
+    "exception": "Exception",
+}

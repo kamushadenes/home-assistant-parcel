@@ -6,7 +6,7 @@ from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed, \
     CoordinatorEntity
 
-from .const import DOMAIN, statusCodes
+from .const import DOMAIN, statusCodes, statusMilestones
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -116,7 +116,7 @@ class Ship24Sensor(CoordinatorEntity, Entity):
                 last_event = t
                 status = event['statusCode']
 
-        return statusCodes.get(status, status)
+        return statusCodes.Get(status, statusMilestones.get(status, "Unknown"))
 
     @property
     def extra_state_attributes(self):
