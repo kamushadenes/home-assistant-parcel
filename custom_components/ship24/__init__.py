@@ -3,10 +3,18 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from .sensor import Ship24UpdateCoordinator
 import logging
+from homeassistant.helpers.template import Template
+
 
 from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
+
+
+async def render_template(hass, template_str, variables=None):
+    variables = variables or {}
+    template = Template(template_str, hass)
+    return template.async_render(variables)
 
 
 async def async_setup(hass: HomeAssistant, config: dict) -> bool:
@@ -32,11 +40,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass.config_entries.async_forward_entry_setup(entry, "sensor")
     )
 
-    # If your component provides a service, set it up here:
+    # Setup services
     async def async_track_package(call):
         """Service to add a new package tracker."""
         api_key = entry.data.get("api_key")
-        tracking_number = call.data.get("tracking_number")
+        tracking_number = await render_template(hass, call.data.get("tracking_number"))
         session = async_get_clientsession(hass)
 
         _LOGGER.warn({"trackingNumber": tracking_number})
