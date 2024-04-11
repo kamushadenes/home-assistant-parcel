@@ -1,3 +1,4 @@
+import json
 import aiohttp
 import logging
 from datetime import timedelta
@@ -49,6 +50,7 @@ class Ship24UpdateCoordinator(DataUpdateCoordinator):
 
         # Fetch tracking results for each tracker
         tracking_data = {}
+        _LOGGER.info(json.dumps(trackers))
         for tracker in trackers.get('data', []):
             tracker_id = tracker['trackerId']
             tracking_url = f"https://api.ship24.com/public/v1/trackers/{tracker_id}"
