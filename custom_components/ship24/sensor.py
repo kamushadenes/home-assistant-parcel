@@ -44,7 +44,7 @@ class Ship24UpdateCoordinator(DataUpdateCoordinator):
         headers = {
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json; charset=utf-8",
-        },
+        }
 
         async with self.session.get(trackers_url, headers=headers) as response:
             if response.status != 200:
