@@ -4,8 +4,6 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from .sensor import Ship24UpdateCoordinator
 import logging
 from homeassistant.helpers.template import Template
-from homeassistant.components.persistent_notification import create as create_notification
-
 
 from .const import DOMAIN
 
@@ -20,6 +18,11 @@ async def render_template(hass, template_str, variables=None):
 
 async def async_setup(hass: HomeAssistant, config: dict) -> bool:
     return True
+
+
+def notify_user(hass, message):
+    event_data = {"message": message}
+    hass.bus.fire("custom_toast_notification", event_data)
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
@@ -67,9 +70,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
         await coordinator.async_request_refresh()
 
-        create_notification(hass,
-                            f"Packaged {tracking_number} added successfully!",
-                            "Package Added")
+        notify_user(hass, f"Package {tracking_number} added successfully!")
 
     # Register your service with Home Assistant.
     hass.services.async_register(DOMAIN, "track_package", async_track_package)
