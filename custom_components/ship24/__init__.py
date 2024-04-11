@@ -39,6 +39,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         tracking_number = call.data.get("tracking_number")
         session = async_get_clientsession(hass)
 
+        _LOGGER.warn({"trackingNumber": tracking_number})
+
         async with session.post(
                 "https://api.ship24.com/public/v1/trackers",
                 json={"trackingNumber": tracking_number},
