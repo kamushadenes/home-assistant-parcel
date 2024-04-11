@@ -88,6 +88,7 @@ class Ship24Sensor(CoordinatorEntity, Entity):
     @property
     def name(self):
         """Return the name of the sensor."""
+        self.coordinator.data.get("tracker", {}).get("trackingNumber", self.tracker_id)
         return f"Package {self.tracker_id}"
 
     @property
