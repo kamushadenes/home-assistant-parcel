@@ -57,7 +57,6 @@ class Ship24UpdateCoordinator(DataUpdateCoordinator):
 
         # Fetch tracking results for each tracker
         tracking_data = {}
-        _LOGGER.warn(json.dumps(trackers))
         for tracker in trackers.get('data', {}).get('trackers', []):
             _LOGGER.warn(f"Fetching tracking data for {tracker['trackerId']}")
             tracker_id = tracker['trackerId']
@@ -71,7 +70,6 @@ class Ship24UpdateCoordinator(DataUpdateCoordinator):
                 tracking_data[tracker_id] = tracking_result.get('data', {}).get('trackings', [{}])[0]
                 _LOGGER.warn(json.dumps(tracking_data[tracker_id]))
 
-        _LOGGER.warn(json.dumps(tracking_data))
         return tracking_data
 
 
@@ -88,6 +86,8 @@ class Ship24Sensor(CoordinatorEntity, Entity):
     @property
     def name(self):
         """Return the name of the sensor."""
+        _LOGGER.warn(f"Getting name for {self.tracker_id}")
+        _LOGGER.warn(json.dumps(self.coordinator.data))
         self.coordinator.data.get("tracker", {}).get("trackingNumber", self.tracker_id)
         return f"Package {self.tracker_id}"
 
