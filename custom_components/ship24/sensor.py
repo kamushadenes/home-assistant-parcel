@@ -13,6 +13,8 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up Ship24 sensors based on a config entry."""
+    _LOGGER.warn("Setting up sensors")
+
     coordinator = hass.data[DOMAIN][config_entry.entry_id]
 
     # Check if coordinator.data is None or if it doesn't have the expected structure
@@ -40,6 +42,8 @@ class Ship24UpdateCoordinator(DataUpdateCoordinator):
 
     async def _async_update_data(self):
         """Fetch data from Ship24."""
+        _LOGGER.warn("Fetching trackers")
+
         trackers_url = "https://api.ship24.com/public/v1/trackers"
         headers = {
             "Authorization": f"Bearer {self.api_key}",
@@ -55,6 +59,7 @@ class Ship24UpdateCoordinator(DataUpdateCoordinator):
         tracking_data = {}
         _LOGGER.warn(json.dumps(trackers))
         for tracker in trackers.get('data', {}).get('trackers', []):
+            _LOGGER.warn(f"Fetching tracking data for {tracker['trackerId']}")
             tracker_id = tracker['trackerId']
             tracking_url = f"https://api.ship24.com/public/v1/trackers/{tracker_id}/results"
 
@@ -64,6 +69,7 @@ class Ship24UpdateCoordinator(DataUpdateCoordinator):
                     continue
                 tracking_result = await response.json()
                 tracking_data[tracker_id] = tracking_result.get('data', {}).get('trackings', [{}])[0]
+                _LOGGER.warn(json.dumps(tracking_data[tracker_id]))
 
         _LOGGER.warn(json.dumps(tracking_data))
         return tracking_data
@@ -73,6 +79,7 @@ class Ship24Sensor(CoordinatorEntity, Entity):
     """Representation of a Ship24 package sensor."""
 
     def __init__(self, coordinator, tracker_id):
+        _LOGGER.warn(f"Creating sensor for {tracker_id}")
         super().__init__(coordinator)
         self.tracker_id = tracker_id
         self.attrs = {}
