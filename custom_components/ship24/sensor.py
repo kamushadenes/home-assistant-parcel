@@ -41,7 +41,10 @@ class Ship24UpdateCoordinator(DataUpdateCoordinator):
     async def _async_update_data(self):
         """Fetch data from Ship24."""
         trackers_url = "https://api.ship24.com/public/v1/trackers"
-        headers = {"Authorization": f"Bearer {self.api_key}"}
+        headers = {
+            "Authorization": f"Bearer {self.api_key}",
+            "Content-Type": "application/json; charset=utf-8",
+        },
 
         async with self.session.get(trackers_url, headers=headers) as response:
             if response.status != 200:
@@ -50,7 +53,7 @@ class Ship24UpdateCoordinator(DataUpdateCoordinator):
 
         # Fetch tracking results for each tracker
         tracking_data = {}
-        _LOGGER.error(json.dumps(trackers))
+        _LOGGER.warn(json.dumps(trackers))
         for tracker in trackers.get('data', {}).get('trackers', []):
             tracker_id = tracker['trackerId']
             tracking_url = f"https://api.ship24.com/public/v1/trackers/{tracker_id}"

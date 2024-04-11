@@ -39,7 +39,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         async with session.post(
                 "https://api.ship24.com/public/v1/trackers",
                 json={"trackingNumber": tracking_number},
-                headers={"Authorization": f"Bearer {api_key}"},
+                headers={
+                    "Authorization": f"Bearer {api_key}",
+                    "Content-Type": "application/json; charset=utf-8",
+                },
         ) as response:
             response.raise_for_status()
             # Handle response
