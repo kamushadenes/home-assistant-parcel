@@ -121,4 +121,14 @@ class Ship24Sensor(CoordinatorEntity, Entity):
     def extra_state_attributes(self):
         """Return the state attributes."""
         # Return all tracking data or select specific fields
-        return self.coordinator.data.get(self.tracker_id, {})
+        obj = self.coordinator.data.get(self.tracker_id, {})
+        d = {'Tracker ID': obj.get('tracker', {}).get('trackerId', self.tracker_id),
+             'Tracking Number': obj.get('tracker', {}).get('trackingNumber', ''),
+             'Shipment Reference': obj.get('tracker', {}).get('shipmentReference', ''),
+             'Created At': obj.get('tracker', {}).get('createdAt', ''),
+             'Shipment ID': obj.get('shipment', {}).get('shipmentId', ''),
+             'Status Code': obj.get('status', {}).get('statusCode', ''),
+             'Status Category': obj.get('status', {}).get('statusCategory', ''),
+             'Status Milestone': obj.get('status', {}).get('statusMilestone', '')}
+
+        return d
