@@ -114,9 +114,14 @@ class Ship24Sensor(CoordinatorEntity, Entity):
             t = datetime.strptime(event['occurrenceDatetime'], '%Y-%m-%dT%H:%M:%S')
             if last_event is None or t > last_event:
                 last_event = t
-                status = event['statusCode']
+                if event['statusCode'] in statusCodes:
+                    status = statusCodes[event['statusCode']]
+                elif event['statusMilestone'] in statusMilestones:
+                    status = statusMilestones[event['statusMilestone']]
+                else:
+                    status = event['status'].title()
 
-        return statusCodes.Get(status, statusMilestones.get(status, "Unknown"))
+        return status
 
     @property
     def extra_state_attributes(self):
