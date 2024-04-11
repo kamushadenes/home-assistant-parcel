@@ -47,7 +47,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                     "Content-Type": "application/json; charset=utf-8",
                 },
         ) as response:
-            _LOGGER.warn(response.content)
+            _LOGGER.warn(await response.content.read())
             response.raise_for_status()
             # Handle response
 
