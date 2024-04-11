@@ -1,12 +1,20 @@
+import aiohttp
 import logging
 from datetime import timedelta
-
-import aiohttp
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed, \
     CoordinatorEntity
 
+from .const import DOMAIN
+
 _LOGGER = logging.getLogger(__name__)
+
+
+async def async_setup_entry(hass, config_entry, async_add_entities):
+    """Set up Ship24 sensors based on a config entry."""
+    coordinator = hass.data[DOMAIN][config_entry.entry_id]
+    sensors = [Ship24Sensor(coordinator, tracker_id) for tracker_id in coordinator.data.keys()]
+    async_add_entities(sensors, update_before_add=True)
 
 
 class Ship24UpdateCoordinator(DataUpdateCoordinator):

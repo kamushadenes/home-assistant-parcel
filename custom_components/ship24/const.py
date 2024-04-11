@@ -1,7 +1,6 @@
 """Constants for the Parcel integration."""
-from typing import Final
-
 from homeassistant.const import Platform
+from typing import Final
 
 DOMAIN: Final = "ship24"
 PLATFORMS: Final = [Platform.SENSOR]
