@@ -18,8 +18,6 @@ async def render_template(hass, template_str, variables=None):
 
 
 async def async_setup(hass: HomeAssistant, config: dict) -> bool:
-    # This method should remain fairly minimal, as it sets up the component,
-    # and optionally sets up any platforms.
     return True
 
 
@@ -48,10 +46,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         tracking_number = await render_template(hass, call.data.get("tracking_number"))
         session = async_get_clientsession(hass)
 
-        _LOGGER.warn({"trackingNumber": tracking_number})
-
         async with session.post(
-                "https://api.ship24.com/public/v1/trackers",
+                "https://api.ship24.com/public/v1/trackers/track",
                 json={
                     "trackingNumber": tracking_number,
                     "destinationCountryCode": country,
@@ -65,6 +61,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 obj = await response.json()
                 _LOGGER.error(obj)
                 raise ValueError(obj['errors'][0]['message'])
+
+        await coordinator.async_request_refresh()
 
     # Register your service with Home Assistant.
     hass.services.async_register(DOMAIN, "track_package", async_track_package)
