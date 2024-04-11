@@ -13,6 +13,12 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up Ship24 sensors based on a config entry."""
     coordinator = hass.data[DOMAIN][config_entry.entry_id]
+
+    # Check if coordinator.data is None or if it doesn't have the expected structure
+    if coordinator.data is None or not isinstance(coordinator.data, dict):
+        _LOGGER.error("Data not loaded properly or unexpected data structure.")
+        return  # Exit setup if data isn't ready
+
     sensors = [Ship24Sensor(coordinator, tracker_id) for tracker_id in coordinator.data.keys()]
     async_add_entities(sensors, update_before_add=True)
 

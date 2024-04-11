@@ -21,7 +21,16 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # Store a reference to the coordinator in hass.data
     if DOMAIN not in hass.data:
         hass.data[DOMAIN] = {}
+
+    # Important: Ensure the initial data load is successful
+    await coordinator.async_refresh()
+
+    if not coordinator.last_update_success:
+        await coordinator.async_request_refresh()
+
     hass.data[DOMAIN][entry.entry_id] = coordinator
+
+
 
     # Forward the entry setup to the sensor platform.
     hass.async_create_task(
