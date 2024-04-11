@@ -127,8 +127,8 @@ class Ship24Sensor(CoordinatorEntity, Entity):
              'Shipment Reference': obj.get('tracker', {}).get('shipmentReference', ''),
              'Created At': obj.get('tracker', {}).get('createdAt', ''),
              'Shipment ID': obj.get('shipment', {}).get('shipmentId', ''),
-             'Status Code': obj.get('status', {}).get('statusCode', ''),
-             'Status Category': obj.get('status', {}).get('statusCategory', ''),
-             'Status Milestone': obj.get('status', {}).get('statusMilestone', '')}
+             'Status Code': obj.get('shipment', {}).get('statusCode', ''),
+             'Status Category': obj.get('shipment', {}).get('statusCategory', ''),
+             'Status Milestone': obj.get('shipment', {}).get('statusMilestone', '')}
 
         return d
