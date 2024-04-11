@@ -1,0 +1,18 @@
+{
+  "title": "Ship24",
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "description": "Package Description",
+          "track": "Tracking Code"
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "This object is already configured",
+      "already_in_progress": "The configuration is in progress",
+      "missing_configuration": "The component isn't configure. Please follow the documentation."
+    }
+  }
+}

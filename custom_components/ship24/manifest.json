@@ -1,0 +1,13 @@
+{
+  "domain": "ship24",
+  "name": "Ship24 Package Tracker",
+  "version": "1.0",
+  "documentation": "https://github.com/kamushadenes/home-assistant-ship24",
+  "dependencies": [],
+  "codeowners": [
+    "@kamushadenes"
+  ],
+  "requirements": [],
+  "iot_class": "cloud_polling",
+  "config_flow": true
+}
