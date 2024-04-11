@@ -44,6 +44,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         """Service to add a new package tracker."""
         api_key = entry.data.get("api_key")
         country = entry.data.get("country")
+        shipment_reference = await render_template(hass, call.data.get("shipment_reference"))
         tracking_number = await render_template(hass, call.data.get("tracking_number"))
         session = async_get_clientsession(hass)
 
@@ -52,6 +53,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 json={
                     "trackingNumber": tracking_number,
                     "destinationCountryCode": country,
+                    "shipmentReference": shipment_reference,
                 },
                 headers={
                     "Authorization": f"Bearer {api_key}",

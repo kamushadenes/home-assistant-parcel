@@ -89,7 +89,15 @@ class Ship24Sensor(CoordinatorEntity, Entity):
         _LOGGER.warn(f"Getting name for {self.tracker_id}")
         obj = self.coordinator.data.get(self.tracker_id, {})
         tracking_number = obj.get("tracker", {}).get("trackingNumber", self.tracker_id)
+        shipment_reference = obj.get("tracker", {}).get("shipmentReference", "")
+        if shipment_reference:
+            return f"Package {tracking_number} ({shipment_reference})"
         return f"Package {tracking_number}"
+
+    @property
+    def icon(self):
+        """Return the icon of the sensor."""
+        return "mdi:package"
 
     @property
     def state(self):
