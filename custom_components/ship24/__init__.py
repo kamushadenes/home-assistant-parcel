@@ -2,6 +2,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from .sensor import Ship24UpdateCoordinator
+import logging
 
 from .const import DOMAIN
 
