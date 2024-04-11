@@ -5,6 +5,8 @@ from .sensor import Ship24UpdateCoordinator
 
 from .const import DOMAIN
 
+_LOGGER = logging.getLogger(__name__)
+
 
 async def async_setup(hass: HomeAssistant, config: dict) -> bool:
     # This method should remain fairly minimal, as it sets up the component,
@@ -44,6 +46,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                     "Content-Type": "application/json; charset=utf-8",
                 },
         ) as response:
+            _LOGGER.warn(response.content)
             response.raise_for_status()
             # Handle response
 
