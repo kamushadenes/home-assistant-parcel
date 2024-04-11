@@ -87,6 +87,7 @@ class Ship24Sensor(CoordinatorEntity, Entity):
     def name(self):
         """Return the name of the sensor."""
         _LOGGER.warn(f"Getting name for {self.tracker_id}")
+        _LOGGER.warn(self.coordinator.data[self.tracker_id])
         self.coordinator.data.get(self.tracker_id, {}).get("tracker", {}).get("trackingNumber", self.tracker_id)
         return f"Package {self.tracker_id}"
 
